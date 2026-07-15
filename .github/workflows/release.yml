@@ -1,6 +1,6 @@
 name: Release
 
-# Publie un installeur Windows dès qu'un tag de version (vX.Y.Z) est poussé.
+# Publie les installeurs Windows (.exe) et macOS (.dmg) dès qu'un tag vX.Y.Z est poussé.
 on:
   push:
     tags:
@@ -8,11 +8,15 @@ on:
   workflow_dispatch: # permet aussi un lancement manuel depuis l'onglet Actions
 
 permissions:
-  contents: write # nécessaire pour créer la Release et y attacher le .exe
+  contents: write # nécessaire pour créer la Release et y attacher les fichiers
 
 jobs:
   release:
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,7 +33,10 @@ jobs:
       - name: Build (electron-vite)
         run: npm run build
 
+      # electron-builder cible automatiquement la plateforme du runner :
+      # windows-latest -> .exe (nsis), macos-latest -> .dmg (universal).
       - name: Package & publish installer
-        run: npx electron-builder --win --publish always
+        run: npx electron-builder --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false # build macOS non signé (pas de certificat Apple)

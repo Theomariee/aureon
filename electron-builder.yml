@@ -13,6 +13,14 @@ win:
       arch:
         - x64
   artifactName: ${productName}-Setup-${version}.${ext}
+mac:
+  icon: build/icon.png
+  category: public.app-category.finance
+  target:
+    - target: dmg
+      arch:
+        - universal
+  artifactName: ${productName}-${version}-${arch}.${ext}
 nsis:
   oneClick: false
   perMachine: false
