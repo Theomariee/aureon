@@ -22,3 +22,8 @@ nsis:
   shortcutName: Aureon
   installerIcon: build/icon.ico
   uninstallerIcon: build/icon.ico
+publish:
+  provider: github
+  owner: Theomariee
+  repo: aureon
+  releaseType: release

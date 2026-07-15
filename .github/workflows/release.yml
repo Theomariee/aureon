@@ -1,0 +1,35 @@
+name: Release
+
+# Publie un installeur Windows dès qu'un tag de version (vX.Y.Z) est poussé.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch: # permet aussi un lancement manuel depuis l'onglet Actions
+
+permissions:
+  contents: write # nécessaire pour créer la Release et y attacher le .exe
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (electron-vite)
+        run: npm run build
+
+      - name: Package & publish installer
+        run: npx electron-builder --win --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
