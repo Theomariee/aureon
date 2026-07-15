@@ -26,4 +26,4 @@ publish:
   provider: github
   owner: Theomariee
   repo: aureon
-  releaseType: release
+  releaseType: prerelease
