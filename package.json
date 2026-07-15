@@ -2,7 +2,7 @@
   "name": "aureon",
   "version": "1.0.0",
   "description": "Aureon — suivi de patrimoine financier personnel (application de bureau)",
-  "author": "Aureon",
+  "author": "theomariee",
   "license": "MIT",
   "main": "./out/main/index.js",
   "scripts": {
