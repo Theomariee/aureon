@@ -1,0 +1,42 @@
+{
+  "name": "aureon",
+  "version": "1.0.0",
+  "description": "Aureon — suivi de patrimoine financier personnel (application de bureau)",
+  "author": "Aureon",
+  "license": "MIT",
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "dist": "electron-vite build && electron-builder --win",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.19",
+    "clsx": "^2.1.1",
+    "electron": "^31.2.0",
+    "electron-builder": "^24.13.3",
+    "electron-vite": "^2.3.0",
+    "framer-motion": "^11.3.2",
+    "lucide-react": "^0.408.0",
+    "png-to-ico": "^3.0.2",
+    "postcss": "^8.4.39",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.12.7",
+    "sharp": "^0.35.3",
+    "tailwindcss": "^3.4.6",
+    "typescript": "^7.0.2",
+    "vite": "^5.3.4",
+    "zustand": "^4.5.4"
+  },
+  "dependencies": {
+    "jszip": "^3.10.1"
+  }
+}

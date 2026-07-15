@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-ink-950 text-slate-100 font-sans antialiased;
+    margin: 0;
+    overflow: hidden;
+    background-image:
+      radial-gradient(1200px 600px at 80% -10%, rgba(232, 193, 105, 0.08), transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, rgba(109, 179, 242, 0.06), transparent 55%);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-ink-700 rounded-full;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-line;
+  }
+
+  input,
+  select,
+  textarea {
+    @apply outline-none;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-line bg-ink-850/80 backdrop-blur-sm shadow-card;
+  }
+
+  .field {
+    @apply w-full rounded-xl border border-line bg-ink-900/80 px-3 py-2 text-sm text-slate-100
+      placeholder:text-slate-500 transition focus:border-gold-500/60 focus:ring-2 focus:ring-gold-500/15;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-medium
+      transition active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none select-none;
+  }
+  .btn-primary {
+    @apply btn bg-gold-grad text-ink-950 font-semibold shadow-glow hover:brightness-105;
+  }
+  .btn-ghost {
+    @apply btn border border-line bg-ink-800/60 text-slate-200 hover:bg-ink-700/60;
+  }
+  .btn-subtle {
+    @apply btn text-slate-300 hover:bg-ink-800/60;
+  }
+  .btn-danger {
+    @apply btn border border-coral-500/30 bg-coral-500/10 text-coral-400 hover:bg-coral-500/20;
+  }
+
+  .label {
+    @apply mb-1.5 block text-xs font-medium uppercase tracking-wide text-slate-400;
+  }
+
+  .nav-item {
+    @apply flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-400
+      transition hover:bg-ink-800/70 hover:text-slate-100 cursor-pointer;
+  }
+  .nav-item.active {
+    @apply bg-ink-800 text-slate-50 shadow-card;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-ink-800/60 px-2.5 py-1 text-xs text-slate-300;
+  }
+
+  .tabnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ── Privacy / discreet mode : blur monetary values on toggle ─────────────── */
+.privacy .tabnum:not(input) {
+  filter: blur(7px);
+  user-select: none;
+  transition: filter 0.12s ease;
+}
+/* Monetary axis labels + tooltips inside charts. */
+.privacy .recharts-yAxis .recharts-cartesian-axis-tick-value,
+.privacy .recharts-tooltip-wrapper {
+  filter: blur(6px);
+}
