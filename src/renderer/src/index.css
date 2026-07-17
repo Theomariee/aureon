@@ -90,6 +90,14 @@
   }
 }
 
+/* ── Custom title bar drag regions ───────────────────────────────────────── */
+.app-drag {
+  -webkit-app-region: drag;
+}
+.no-drag {
+  -webkit-app-region: no-drag;
+}
+
 /* ── Privacy / discreet mode : blur monetary values on toggle ─────────────── */
 .privacy .tabnum:not(input) {
   filter: blur(7px);

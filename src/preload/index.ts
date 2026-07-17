@@ -26,7 +26,18 @@ const api: AureonApi = {
   securityDisable: (pin: string) => ipcRenderer.invoke('security:disable', pin),
 
   showItem: (path: string) => ipcRenderer.invoke('shell:show-item', path),
-  openExternal: (url: string) => ipcRenderer.invoke('shell:open-external', url)
+  openExternal: (url: string) => ipcRenderer.invoke('shell:open-external', url),
+
+  platform: process.platform,
+  windowMinimize: () => ipcRenderer.invoke('window:minimize'),
+  windowMaximizeToggle: () => ipcRenderer.invoke('window:maximize-toggle'),
+  windowClose: () => ipcRenderer.invoke('window:close'),
+  windowIsMaximized: () => ipcRenderer.invoke('window:is-maximized'),
+  onMaximizeChange: (cb: (maximized: boolean) => void) => {
+    const listener = (_e: unknown, v: boolean): void => cb(v)
+    ipcRenderer.on('window:maximized', listener)
+    return () => ipcRenderer.removeListener('window:maximized', listener)
+  }
 }
 
 contextBridge.exposeInMainWorld('api', api)

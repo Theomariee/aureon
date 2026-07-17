@@ -18,6 +18,7 @@ import { entryReminder } from '../../shared/domain'
 import { Toasts } from './components/Toasts'
 import { LockScreen } from './components/LockScreen'
 import { Onboarding } from './components/Onboarding'
+import { TitleBar } from './components/TitleBar'
 import { Modal } from './components/Modal'
 import { PinSetup } from './components/PinSetup'
 import { Dashboard } from './pages/Dashboard'
@@ -84,18 +85,16 @@ export default function App(): JSX.Element {
     setOnboarding(false)
   }
 
-  if (loaded && locked) {
-    return (
-      <>
-        <LockScreen />
-        <Toasts />
-      </>
-    )
-  }
-
   return (
-    <div className="flex h-full">
-      {/* Sidebar */}
+    <div className="flex h-full flex-col">
+      <TitleBar />
+      {loaded && locked ? (
+        <div className="min-h-0 flex-1">
+          <LockScreen />
+        </div>
+      ) : (
+        <div className="flex min-h-0 flex-1">
+          {/* Sidebar */}
       <aside className="flex w-60 flex-col border-r border-line bg-ink-900/60 px-3 py-5">
         <div className="mb-8 flex items-center gap-3 px-2">
           <div className="grid h-10 w-10 place-items-center rounded-xl bg-gold-grad text-ink-950 shadow-glow">
@@ -191,6 +190,8 @@ export default function App(): JSX.Element {
           )}
         </div>
       </main>
+        </div>
+      )}
 
       <Onboarding open={onboarding} onClose={closeOnboarding} />
       <Modal

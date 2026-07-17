@@ -52,4 +52,13 @@ export interface AureonApi {
 
   showItem(path: string): Promise<boolean>
   openExternal(url: string): Promise<boolean>
+
+  // Window controls (custom title bar)
+  platform: string
+  windowMinimize(): Promise<void>
+  windowMaximizeToggle(): Promise<void>
+  windowClose(): Promise<void>
+  windowIsMaximized(): Promise<boolean>
+  /** Subscribe to maximize/unmaximize; returns an unsubscribe function. */
+  onMaximizeChange(cb: (maximized: boolean) => void): () => void
 }

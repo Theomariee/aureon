@@ -35,8 +35,12 @@ function createWindow(): void {
     show: false,
     backgroundColor: '#0b0f1a',
     icon: isDev ? join(__dirname, '../../build/icon.ico') : undefined,
-    titleBarStyle: 'hiddenInset',
     autoHideMenuBar: true,
+    // Frameless with a custom in-app title bar (like Discord). On macOS we keep
+    // the native traffic lights but hide the bar background.
+    ...(process.platform === 'darwin'
+      ? { titleBarStyle: 'hidden' as const, trafficLightPosition: { x: 14, y: 13 } }
+      : { frame: false }),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -45,6 +49,10 @@ function createWindow(): void {
   })
 
   mainWindow.on('ready-to-show', () => mainWindow?.show())
+
+  // Keep the custom title bar's maximize/restore icon in sync.
+  mainWindow.on('maximize', () => mainWindow?.webContents.send('window:maximized', true))
+  mainWindow.on('unmaximize', () => mainWindow?.webContents.send('window:maximized', false))
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url)
@@ -177,6 +185,16 @@ function registerIpc(): void {
     await fs.writeFile(res.filePath, out)
     return { ok: true, path: res.filePath, encrypted: security.hasActiveKey() }
   })
+
+  // ── Window controls (custom title bar) ──
+  ipcMain.handle('window:minimize', () => mainWindow?.minimize())
+  ipcMain.handle('window:maximize-toggle', () => {
+    if (!mainWindow) return
+    if (mainWindow.isMaximized()) mainWindow.unmaximize()
+    else mainWindow.maximize()
+  })
+  ipcMain.handle('window:close', () => mainWindow?.close())
+  ipcMain.handle('window:is-maximized', () => mainWindow?.isMaximized() ?? false)
 
   ipcMain.handle('shell:show-item', async (_e, path: string) => {
     shell.showItemInFolder(path)
