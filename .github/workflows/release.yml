@@ -13,6 +13,11 @@ permissions:
 jobs:
   release:
     strategy:
+      # Sérialisé (un seul job à la fois) : le 1er runner crée la Release
+      # GitHub, le 2e la retrouve et y ajoute son installeur. En parallèle,
+      # les deux tentent de créer la Release et le plus lent échoue en
+      # « 422 already_exists ».
+      max-parallel: 1
       matrix:
         os: [windows-latest, macos-latest]
       fail-fast: false
