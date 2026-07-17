@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { FileText, History as HistoryIcon } from 'lucide-react'
+import { Clock, FileText, History as HistoryIcon } from 'lucide-react'
 import { useStore } from '../store'
 import { useFmt } from '../lib/format'
 import { PageHeader } from '../components/PageHeader'
@@ -37,6 +37,24 @@ export function HistoryPage(): JSX.Element {
     void window.api.openReport(db, period)
   }
 
+  // Exact recording date of a month (shown on hover), from the entries' timestamps.
+  const fmtDateTime = (iso: string): string =>
+    new Date(iso).toLocaleString(locale, { dateStyle: 'long', timeStyle: 'short' })
+  const saisieTitle = (period: string): string => {
+    const es = db.entries.filter((e) => e.period === period && e.createdAt)
+    if (es.length === 0) return ''
+    const created = es.reduce((m, e) => (e.createdAt < m ? e.createdAt : m), es[0].createdAt)
+    const updated = es.reduce((m, e) => {
+      const u = e.updatedAt ?? e.createdAt
+      return u > m ? u : m
+    }, es[0].updatedAt ?? es[0].createdAt)
+    let s = `Saisi le ${fmtDateTime(created)}`
+    if (new Date(updated).getTime() - new Date(created).getTime() > 5 * 60 * 1000) {
+      s += `\nDernière modification le ${fmtDateTime(updated)}`
+    }
+    return s
+  }
+
   // Product history matrix (values per period).
   const activeProducts = db.products
   const valueAt = (productId: string, period: string): number | null => {
@@ -69,8 +87,14 @@ export function HistoryPage(): JSX.Element {
             <tbody className="divide-y divide-line/50">
               {timeline.map((t) => (
                 <tr key={t.period} className="hover:bg-ink-800/40">
-                  <td className="px-5 py-3 font-medium text-slate-100">
-                    {formatPeriod(t.period, locale)}
+                  <td className="px-5 py-3">
+                    <span
+                      className="inline-flex cursor-help items-center gap-1.5 font-medium text-slate-100"
+                      title={saisieTitle(t.period)}
+                    >
+                      {formatPeriod(t.period, locale)}
+                      <Clock size={12} className="text-slate-500" />
+                    </span>
                   </td>
                   <td className="tabnum px-5 py-3 text-right text-slate-200">
                     {fmt.currency(t.total)}
