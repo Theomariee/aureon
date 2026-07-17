@@ -1,22 +1,18 @@
 import { resolve } from 'path'
-import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
+import { defineConfig } from 'electron-vite'
 import react from '@vitejs/plugin-react'
 
+// electron-vite 5 externalizes main/preload deps by default (build.externalizeDeps),
+// so the former externalizeDepsPlugin() is no longer needed.
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()],
     build: {
-      rollupOptions: {
-        input: { index: resolve(__dirname, 'src/main/index.ts') }
-      }
+      rollupOptions: { input: { index: resolve(__dirname, 'src/main/index.ts') } }
     }
   },
   preload: {
-    plugins: [externalizeDepsPlugin()],
     build: {
-      rollupOptions: {
-        input: { index: resolve(__dirname, 'src/preload/index.ts') }
-      }
+      rollupOptions: { input: { index: resolve(__dirname, 'src/preload/index.ts') } }
     }
   },
   renderer: {
@@ -26,9 +22,7 @@ export default defineConfig({
     },
     plugins: [react()],
     build: {
-      rollupOptions: {
-        input: { index: resolve(__dirname, 'src/renderer/index.html') }
-      }
+      rollupOptions: { input: { index: resolve(__dirname, 'src/renderer/index.html') } }
     }
   }
 })
