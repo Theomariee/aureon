@@ -6,7 +6,7 @@ import { PageHeader } from '../components/PageHeader'
 import { EmptyState } from '../components/EmptyState'
 import { allPeriods, buildTimeline, formatPeriod, shortPeriod } from '../../../shared/domain'
 
-export function HistoryPage(): JSX.Element {
+export function HistoryPage(): React.JSX.Element {
   const db = useStore((s) => s.db)
   const setView = useStore((s) => s.setView)
   const fmt = useFmt()

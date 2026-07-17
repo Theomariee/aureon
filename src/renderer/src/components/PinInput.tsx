@@ -11,7 +11,7 @@ export function PinInput({
   onChange: (v: string) => void
   autoFocus?: boolean
   disabled?: boolean
-}): JSX.Element {
+}): React.JSX.Element {
   const refs = useRef<(HTMLInputElement | null)[]>([])
 
   const setDigit = (i: number, d: string): void => {
@@ -43,7 +43,9 @@ export function PinInput({
       {Array.from({ length: 6 }).map((_, i) => (
         <input
           key={i}
-          ref={(el) => (refs.current[i] = el)}
+          ref={(el) => {
+            refs.current[i] = el
+          }}
           type="password"
           inputMode="numeric"
           maxLength={1}

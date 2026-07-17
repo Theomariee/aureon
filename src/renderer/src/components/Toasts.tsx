@@ -8,7 +8,7 @@ const icons = {
   info: <Info size={18} className="text-sky-400" />
 }
 
-export function Toasts(): JSX.Element {
+export function Toasts(): React.JSX.Element {
   const toasts = useStore((s) => s.toasts)
   const dismiss = useStore((s) => s.dismissToast)
   return (

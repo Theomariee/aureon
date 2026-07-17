@@ -8,7 +8,7 @@ export function PageHeader({
   title: string
   subtitle?: string
   actions?: ReactNode
-}): JSX.Element {
+}): React.JSX.Element {
   return (
     <div className="mb-6 flex items-end justify-between gap-4">
       <div>

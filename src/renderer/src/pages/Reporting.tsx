@@ -26,7 +26,7 @@ import {
 const POS = '#4ade9a'
 const NEG = '#ff7a85'
 
-export function Reporting(): JSX.Element {
+export function Reporting(): React.JSX.Element {
   const db = useStore((s) => s.db)
   const setView = useStore((s) => s.setView)
   const fmt = useFmt()
@@ -166,7 +166,7 @@ export function Reporting(): JSX.Element {
                     borderRadius: 12,
                     color: '#e8eefc'
                   }}
-                  formatter={(v: number) => [`${v.toFixed(2)} %`, 'TRI annualisé']}
+                  formatter={(v) => [`${Number(v).toFixed(2)} %`, 'TRI annualisé']}
                 />
                 <Bar dataKey="tri" radius={[0, 4, 4, 0]} barSize={20}>
                   {barData.map((d, i) => (
@@ -175,7 +175,10 @@ export function Reporting(): JSX.Element {
                   <LabelList
                     dataKey="tri"
                     position="right"
-                    formatter={(v: number) => `${v > 0 ? '+' : ''}${v.toFixed(1)}%`}
+                    formatter={(v) => {
+                      const n = Number(v)
+                      return `${n > 0 ? '+' : ''}${n.toFixed(1)}%`
+                    }}
                     style={{ fill: '#9fb0cc', fontSize: 11 }}
                   />
                 </Bar>
@@ -300,7 +303,7 @@ function Mini({
   label: string
   value: string
   tone?: 'pos' | 'neg' | 'flat'
-}): JSX.Element {
+}): React.JSX.Element {
   const toneClass = tone === 'pos' ? 'text-mint-400' : tone === 'neg' ? 'text-coral-400' : 'text-slate-100'
   return (
     <div className="bg-ink-850 p-5">

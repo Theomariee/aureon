@@ -9,7 +9,7 @@ import type { CategoryId, ProductNature } from '../../../shared/types'
 
 const SWATCHES = ['#e8c169', '#6db3f2', '#4ade9a', '#b18cf2', '#f2a56d', '#6ddcf2', '#f4515f']
 
-export function Products(): JSX.Element {
+export function Products(): React.JSX.Element {
   const db = useStore((s) => s.db)
   const {
     addPlatform,
@@ -400,7 +400,7 @@ export function Products(): JSX.Element {
     </>
   )
 
-  function renderPlatformModal(): JSX.Element {
+  function renderPlatformModal(): React.JSX.Element {
     return (
       <Modal
         open={platModal.open}

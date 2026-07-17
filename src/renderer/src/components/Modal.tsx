@@ -11,7 +11,7 @@ interface Props {
   width?: number
 }
 
-export function Modal({ open, title, onClose, children, footer, width = 520 }: Props): JSX.Element {
+export function Modal({ open, title, onClose, children, footer, width = 520 }: Props): React.JSX.Element {
   return (
     <AnimatePresence>
       {open && (

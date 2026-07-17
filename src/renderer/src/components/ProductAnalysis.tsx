@@ -23,7 +23,7 @@ import {
 const COLORS = { value: '#e8c169', gain: '#4ade9a', flow: '#6db3f2' }
 
 /** Reusable per-product analysis block: decomposition KPIs, triple curve, monthly detail. */
-export function ProductAnalysis({ productId }: { productId: string }): JSX.Element {
+export function ProductAnalysis({ productId }: { productId: string }): React.JSX.Element {
   const db = useStore((s) => s.db)
   const fmt = useFmt()
   const locale = db.profile.locale
@@ -133,7 +133,7 @@ export function ProductAnalysis({ productId }: { productId: string }): JSX.Eleme
                   color: '#e8eefc'
                 }}
                 labelStyle={{ color: '#9fb0cc' }}
-                formatter={(v: number, name: string) => [fmt.currency(v), name]}
+                formatter={(v, name) => [fmt.currency(Number(v)), name]}
               />
               <Legend wrapperStyle={{ fontSize: 12, color: '#9fb0cc' }} iconType="plainline" />
               <Line type="monotone" dataKey="Valeur" stroke={COLORS.value} strokeWidth={2.5} dot={{ r: 2 }} activeDot={{ r: 4 }} />
@@ -215,10 +215,10 @@ function Stat({
   label: string
   value: string
   sub?: string
-  icon?: JSX.Element
+  icon?: React.JSX.Element
   tone?: 'pos' | 'neg' | 'flat'
   accent?: boolean
-}): JSX.Element {
+}): React.JSX.Element {
   const toneClass =
     tone === 'pos' ? 'text-mint-400' : tone === 'neg' ? 'text-coral-400' : 'text-slate-50'
   return (

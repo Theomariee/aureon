@@ -42,7 +42,7 @@ function parseNum(s: string): number {
   return Number.isFinite(n) ? n : 0
 }
 
-export function MonthlyEntry(): JSX.Element {
+export function MonthlyEntry(): React.JSX.Element {
   const db = useStore((s) => s.db)
   const upsertEntry = useStore((s) => s.upsertEntry)
   const setView = useStore((s) => s.setView)

@@ -37,7 +37,7 @@ const NAV = [
   { id: 'settings', label: 'Réglages', icon: Settings }
 ] as const
 
-export default function App(): JSX.Element {
+export default function App(): React.JSX.Element {
   const {
     db,
     view,

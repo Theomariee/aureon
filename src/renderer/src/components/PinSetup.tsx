@@ -13,7 +13,7 @@ export function PinSetup({
 }: {
   onComplete: () => void
   variant?: 'setup' | 'reset'
-}): JSX.Element {
+}): React.JSX.Element {
   const db = useStore((s) => s.db)
   const markPinSet = useStore((s) => s.markPinSet)
 

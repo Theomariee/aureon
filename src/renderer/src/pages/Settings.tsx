@@ -21,7 +21,7 @@ import { PinInput } from '../components/PinInput'
 import { PinSetup } from '../components/PinSetup'
 import type { EncryptedEnvelope } from '../../../shared/api'
 
-export function SettingsPage(): JSX.Element {
+export function SettingsPage(): React.JSX.Element {
   const db = useStore((s) => s.db)
   const setProfile = useStore((s) => s.setProfile)
   const replaceDb = useStore((s) => s.replaceDb)

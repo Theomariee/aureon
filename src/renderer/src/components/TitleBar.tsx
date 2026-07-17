@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Gem, Minus, X, Square } from 'lucide-react'
 
 /** Restore glyph (two offset squares), used when the window is maximized. */
-function RestoreIcon(): JSX.Element {
+function RestoreIcon(): React.JSX.Element {
   return (
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.1">
       <rect x="1.5" y="3.3" width="6.2" height="6.2" rx="1" />
@@ -16,7 +16,7 @@ function RestoreIcon(): JSX.Element {
  * minimize / maximize-restore / close controls on Windows & Linux. On macOS the
  * native traffic lights are kept, so we only reserve space for them.
  */
-export function TitleBar(): JSX.Element {
+export function TitleBar(): React.JSX.Element {
   const isMac = window.api.platform === 'darwin'
   const [maximized, setMaximized] = useState(false)
 

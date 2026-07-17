@@ -10,7 +10,7 @@ export function Donut({
   data: AllocationSlice[]
   centerLabel?: string
   centerValue?: string
-}): JSX.Element {
+}): React.JSX.Element {
   const fmt = useFmt()
   const total = data.reduce((s, d) => s + d.value, 0)
   const slices = data.filter((d) => d.value > 0)

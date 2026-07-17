@@ -4,7 +4,7 @@ import { Modal } from './Modal'
 import { PinSetup } from './PinSetup'
 
 /** First-launch proposal to protect the app with a PIN. Fully skippable. */
-export function Onboarding({ open, onClose }: { open: boolean; onClose: () => void }): JSX.Element {
+export function Onboarding({ open, onClose }: { open: boolean; onClose: () => void }): React.JSX.Element {
   const [step, setStep] = useState<'intro' | 'setup'>('intro')
 
   return (
@@ -51,10 +51,10 @@ function Feature({
   title,
   children
 }: {
-  icon: JSX.Element
+  icon: React.JSX.Element
   title: string
   children: React.ReactNode
-}): JSX.Element {
+}): React.JSX.Element {
   return (
     <div className="flex items-start gap-3">
       <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-ink-800 text-gold-500">

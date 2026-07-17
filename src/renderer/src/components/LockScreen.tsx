@@ -4,7 +4,7 @@ import { Gem, KeyRound, ShieldCheck } from 'lucide-react'
 import { useStore } from '../store'
 import { PinInput } from './PinInput'
 
-export function LockScreen(): JSX.Element {
+export function LockScreen(): React.JSX.Element {
   const unlock = useStore((s) => s.unlock)
   const unlockRecovery = useStore((s) => s.unlockRecovery)
   const [pin, setPin] = useState('')
@@ -114,7 +114,7 @@ function PinRow({
   onChange: (v: string) => void
   onEnter: () => void
   disabled?: boolean
-}): JSX.Element {
+}): React.JSX.Element {
   return (
     <div onKeyDown={(e) => e.key === 'Enter' && onEnter()}>
       <PinInput value={value} onChange={onChange} autoFocus disabled={disabled} />

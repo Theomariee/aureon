@@ -28,7 +28,7 @@ import {
   shortPeriod
 } from '../../../shared/domain'
 
-export function Dashboard(): JSX.Element {
+export function Dashboard(): React.JSX.Element {
   const db = useStore((s) => s.db)
   const setView = useStore((s) => s.setView)
   const openEntry = useStore((s) => s.openEntry)
@@ -212,7 +212,7 @@ export function Dashboard(): JSX.Element {
                   color: '#e8eefc'
                 }}
                 labelStyle={{ color: '#9fb0cc' }}
-                formatter={(v: number) => [fmt.currency(v), 'Patrimoine']}
+                formatter={(v) => [fmt.currency(Number(v)), 'Patrimoine']}
               />
               <Area
                 type="monotone"
@@ -325,7 +325,7 @@ function dispoPct(liq: ReturnType<typeof allocationByLiquidity>): string {
   return d ? `${d.pct.toFixed(0)}%` : '0%'
 }
 
-function PencilIcon(): JSX.Element {
+function PencilIcon(): React.JSX.Element {
   return <Sparkles size={16} />
 }
 
@@ -340,10 +340,10 @@ function Stat({
   label: string
   value: string
   sub?: string
-  icon?: JSX.Element
+  icon?: React.JSX.Element
   tone?: 'pos' | 'neg' | 'flat'
   accent?: boolean
-}): JSX.Element {
+}): React.JSX.Element {
   const toneClass =
     tone === 'pos' ? 'text-mint-400' : tone === 'neg' ? 'text-coral-400' : 'text-slate-50'
   return (
