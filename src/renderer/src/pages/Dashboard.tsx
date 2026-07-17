@@ -15,6 +15,9 @@ import { PageHeader } from '../components/PageHeader'
 import { EmptyState } from '../components/EmptyState'
 import { Donut } from '../components/Donut'
 import { ProductAnalysis } from '../components/ProductAnalysis'
+import { AnimatedNumber } from '../components/AnimatedNumber'
+import { Sparkline } from '../components/Sparkline'
+import { ChartTooltip } from '../components/ChartTooltip'
 import {
   allPeriods,
   allocationByCategory,
@@ -149,24 +152,29 @@ export function Dashboard(): React.JSX.Element {
       <div className="mb-5 grid grid-cols-4 gap-4">
         <Stat
           label="Patrimoine total"
-          value={fmt.currency(total)}
+          amount={total}
+          format={fmt.currency}
           icon={<Wallet size={18} />}
           accent
+          spark={timeline.map((t) => t.total)}
         />
         <Stat
           label="Variation du mois"
-          value={fmt.signed(delta)}
+          amount={delta}
+          format={fmt.signed}
           tone={delta > 0 ? 'pos' : delta < 0 ? 'neg' : 'flat'}
           icon={delta >= 0 ? <ArrowUpRight size={18} /> : <ArrowDownRight size={18} />}
         />
         <Stat
           label="Apports / retraits"
-          value={flow !== 0 ? fmt.signed(flow) : '—'}
+          amount={flow}
+          format={(n) => (n !== 0 ? fmt.signed(n) : '—')}
           icon={<Coins size={18} />}
         />
         <Stat
           label="Performance réelle"
-          value={fmt.signed(perf)}
+          amount={perf}
+          format={fmt.signed}
           sub={current?.performancePct != null ? fmt.pct(current.performancePct) : undefined}
           tone={perf > 0 ? 'pos' : perf < 0 ? 'neg' : 'flat'}
           icon={<Sparkles size={18} />}
@@ -205,18 +213,13 @@ export function Dashboard(): React.JSX.Element {
                 tickFormatter={(v) => fmt.currency(v as number)}
               />
               <Tooltip
-                contentStyle={{
-                  background: '#141a28',
-                  border: '1px solid #232c40',
-                  borderRadius: 12,
-                  color: '#e8eefc'
-                }}
-                labelStyle={{ color: '#9fb0cc' }}
-                formatter={(v) => [fmt.currency(Number(v)), 'Patrimoine']}
+                cursor={{ stroke: '#3a4560', strokeWidth: 1, strokeDasharray: '3 3' }}
+                content={<ChartTooltip formatValue={(v) => fmt.currency(v)} />}
               />
               <Area
                 type="monotone"
                 dataKey="total"
+                name="Patrimoine"
                 stroke="#e8c169"
                 strokeWidth={2.5}
                 fill="url(#grad)"
@@ -331,29 +334,42 @@ function PencilIcon(): React.JSX.Element {
 
 function Stat({
   label,
-  value,
+  amount,
+  format,
   sub,
   icon,
   tone = 'flat',
-  accent = false
+  accent = false,
+  spark
 }: {
   label: string
-  value: string
+  amount: number
+  format: (n: number) => string
   sub?: string
   icon?: React.JSX.Element
   tone?: 'pos' | 'neg' | 'flat'
   accent?: boolean
+  spark?: number[]
 }): React.JSX.Element {
   const toneClass =
     tone === 'pos' ? 'text-mint-400' : tone === 'neg' ? 'text-coral-400' : 'text-slate-50'
   return (
-    <div className={`card p-4 ${accent ? 'ring-1 ring-gold-500/20' : ''}`}>
+    <div className={`card card-interactive p-4 ${accent ? 'ring-1 ring-gold-500/20' : ''}`}>
       <div className="mb-2 flex items-center justify-between">
         <span className="text-xs font-medium uppercase tracking-wide text-slate-400">{label}</span>
         <span className={accent ? 'text-gold-500' : 'text-slate-500'}>{icon}</span>
       </div>
-      <div className={`tabnum text-2xl font-bold ${toneClass}`}>{value}</div>
+      <AnimatedNumber
+        value={amount}
+        format={format}
+        className={`tabnum block text-2xl font-bold ${toneClass}`}
+      />
       {sub && <div className="tabnum mt-0.5 text-xs text-slate-400">{sub}</div>}
+      {spark && spark.length > 1 && (
+        <div className="-mb-1 mt-2">
+          <Sparkline data={spark} color={accent ? '#e8c169' : '#5b6a86'} height={28} />
+        </div>
+      )}
     </div>
   )
 }

@@ -15,6 +15,8 @@ import { useStore } from '../store'
 import { useFmt } from '../lib/format'
 import { PageHeader } from '../components/PageHeader'
 import { EmptyState } from '../components/EmptyState'
+import { AnimatedNumber } from '../components/AnimatedNumber'
+import { ChartTooltip } from '../components/ChartTooltip'
 import {
   allPeriods,
   formatPeriod,
@@ -110,23 +112,29 @@ export function Reporting(): React.JSX.Element {
                       : 'text-slate-100'
               }`}
             >
-              {globalTri == null ? '—' : fmt.pct(globalTri * 100)}
+              {globalTri == null ? (
+                '—'
+              ) : (
+                <AnimatedNumber value={globalTri * 100} format={(n) => fmt.pct(n)} />
+              )}
             </div>
             <div className="text-xs text-slate-500">
               Sur {periods.length} mois · depuis {formatPeriod(periods[0], locale)}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-px bg-line sm:grid-cols-4">
-            <Mini label="Patrimoine" value={fmt.currency(totalValue)} />
-            <Mini label="Investi net" value={fmt.currency(totalInvested)} />
+            <Mini label="Patrimoine" amount={totalValue} format={fmt.currency} />
+            <Mini label="Investi net" amount={totalInvested} format={fmt.currency} />
             <Mini
               label="Gains latents"
-              value={fmt.signed(totalLatent)}
+              amount={totalLatent}
+              format={fmt.signed}
               tone={totalLatent > 0 ? 'pos' : totalLatent < 0 ? 'neg' : 'flat'}
             />
             <Mini
               label="Perf. totale"
-              value={globalSimplePct != null ? fmt.pct(globalSimplePct) : '—'}
+              amount={globalSimplePct ?? 0}
+              format={(n) => (globalSimplePct != null ? fmt.pct(n) : '—')}
               tone={totalLatent > 0 ? 'pos' : totalLatent < 0 ? 'neg' : 'flat'}
             />
           </div>
@@ -160,15 +168,9 @@ export function Reporting(): React.JSX.Element {
                 <ReferenceLine x={0} stroke="#3a465e" />
                 <Tooltip
                   cursor={{ fill: 'rgba(255,255,255,0.03)' }}
-                  contentStyle={{
-                    background: '#141a28',
-                    border: '1px solid #232c40',
-                    borderRadius: 12,
-                    color: '#e8eefc'
-                  }}
-                  formatter={(v) => [`${Number(v).toFixed(2)} %`, 'TRI annualisé']}
+                  content={<ChartTooltip formatValue={(v) => `${v > 0 ? '+' : ''}${v.toFixed(2)} %`} />}
                 />
-                <Bar dataKey="tri" radius={[0, 4, 4, 0]} barSize={20}>
+                <Bar dataKey="tri" name="TRI annualisé" radius={[0, 4, 4, 0]} barSize={20}>
                   {barData.map((d, i) => (
                     <Cell key={i} fill={d.tri >= 0 ? POS : NEG} />
                   ))}
@@ -297,18 +299,20 @@ export function Reporting(): React.JSX.Element {
 
 function Mini({
   label,
-  value,
+  amount,
+  format,
   tone = 'flat'
 }: {
   label: string
-  value: string
+  amount: number
+  format: (n: number) => string
   tone?: 'pos' | 'neg' | 'flat'
 }): React.JSX.Element {
   const toneClass = tone === 'pos' ? 'text-mint-400' : tone === 'neg' ? 'text-coral-400' : 'text-slate-100'
   return (
-    <div className="bg-ink-850 p-5">
+    <div className="bg-ink-850 p-5 transition-colors hover:bg-ink-800">
       <div className="text-xs font-medium uppercase tracking-wide text-slate-400">{label}</div>
-      <div className={`tabnum mt-1 text-xl font-bold ${toneClass}`}>{value}</div>
+      <AnimatedNumber value={amount} format={format} className={`tabnum mt-1 block text-xl font-bold ${toneClass}`} />
     </div>
   )
 }

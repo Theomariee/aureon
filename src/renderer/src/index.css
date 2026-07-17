@@ -28,10 +28,15 @@
   --color-sky-400: #6db3f2;
   --color-sky-500: #3d8ee0;
 
-  --font-sans: Inter, 'Segoe UI', system-ui, sans-serif;
+  --font-sans: 'Inter Variable', Inter, 'Segoe UI', system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 
+  /* Shared motion tokens */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
   --shadow-card: 0 1px 0 0 rgba(255, 255, 255, 0.04) inset, 0 8px 30px -12px rgba(0, 0, 0, 0.6);
+  --shadow-card-hover: 0 1px 0 0 rgba(255, 255, 255, 0.07) inset, 0 18px 44px -18px rgba(0, 0, 0, 0.72);
   --shadow-glow: 0 0 0 1px rgba(232, 193, 105, 0.25), 0 10px 40px -12px rgba(232, 193, 105, 0.25);
 
   --animate-fade-up: fade-up 0.4s ease both;
@@ -77,9 +82,32 @@
     @apply bg-ink-950 text-slate-100 font-sans antialiased;
     margin: 0;
     overflow: hidden;
+    letter-spacing: -0.006em;
+    font-feature-settings:
+      'cv05' 1,
+      'cv08' 1,
+      'ss03' 1,
+      'tnum' 0;
     background-image:
       radial-gradient(1200px 600px at 80% -10%, rgba(232, 193, 105, 0.08), transparent 60%),
       radial-gradient(900px 500px at -10% 10%, rgba(109, 179, 242, 0.06), transparent 55%);
+  }
+
+  /* Tighter tracking on large headings for a more crafted feel. */
+  h1 {
+    letter-spacing: -0.02em;
+  }
+
+  /* Subtle film grain over the whole app (premium material). */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.022;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   ::-webkit-scrollbar {
@@ -143,6 +171,45 @@
 
   .tabnum {
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Subtle hover-lift for tiles / clickable cards. */
+  .card-interactive {
+    @apply transition-[transform,box-shadow,border-color] duration-200 will-change-transform
+      hover:-translate-y-0.5 hover:shadow-card-hover;
+    transition-timing-function: var(--ease-out-quint);
+  }
+
+  /* Keyboard-shortcut badge. */
+  .kbd {
+    @apply inline-flex h-4.5 min-w-4.5 items-center justify-center rounded-md border border-line
+      bg-ink-900/70 px-1 font-mono text-[10px] leading-none text-slate-500;
+  }
+}
+
+/* ── Skeleton loaders (shimmer) ───────────────────────────────────────────── */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-ink-800);
+  border-radius: 0.75rem;
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.045),
+    transparent
+  );
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
   }
 }
 

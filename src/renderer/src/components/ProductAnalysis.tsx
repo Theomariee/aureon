@@ -12,6 +12,8 @@ import {
 import { Coins, LineChart as LineIcon, Sparkles, Wallet } from 'lucide-react'
 import { useStore } from '../store'
 import { useFmt } from '../lib/format'
+import { AnimatedNumber } from './AnimatedNumber'
+import { ChartTooltip } from './ChartTooltip'
 import {
   categoryLabel,
   formatPeriod,
@@ -84,21 +86,24 @@ export function ProductAnalysis({ productId }: { productId: string }): React.JSX
 
       {/* KPIs */}
       <div className="grid grid-cols-4 gap-4">
-        <Stat label="Valeur actuelle" value={fmt.currency(currentValue)} icon={<Wallet size={18} />} accent />
+        <Stat label="Valeur actuelle" amount={currentValue} format={fmt.currency} icon={<Wallet size={18} />} accent />
         <Stat
           label="Gains latents cumulés"
-          value={fmt.signed(totalPerf)}
+          amount={totalPerf}
+          format={fmt.signed}
           icon={<Sparkles size={18} />}
           tone={totalPerf > 0 ? 'pos' : totalPerf < 0 ? 'neg' : 'flat'}
         />
         <Stat
           label="Flux nets cumulés"
-          value={totalFlow !== 0 ? fmt.signed(totalFlow) : '—'}
+          amount={totalFlow}
+          format={(n) => (n !== 0 ? fmt.signed(n) : '—')}
           icon={<Coins size={18} />}
         />
         <Stat
           label="Performance"
-          value={perfPct != null ? fmt.pct(perfPct) : '—'}
+          amount={perfPct ?? 0}
+          format={(n) => (perfPct != null ? fmt.pct(n) : '—')}
           sub={`sur ${fmt.currency(invested)} investis`}
           icon={<LineIcon size={18} />}
           tone={totalPerf > 0 ? 'pos' : totalPerf < 0 ? 'neg' : 'flat'}
@@ -126,14 +131,8 @@ export function ProductAnalysis({ productId }: { productId: string }): React.JSX
                 tickFormatter={(v) => fmt.currency(v as number)}
               />
               <Tooltip
-                contentStyle={{
-                  background: '#141a28',
-                  border: '1px solid #232c40',
-                  borderRadius: 12,
-                  color: '#e8eefc'
-                }}
-                labelStyle={{ color: '#9fb0cc' }}
-                formatter={(v, name) => [fmt.currency(Number(v)), name]}
+                cursor={{ stroke: '#3a4560', strokeWidth: 1, strokeDasharray: '3 3' }}
+                content={<ChartTooltip formatValue={(v) => fmt.currency(v)} />}
               />
               <Legend wrapperStyle={{ fontSize: 12, color: '#9fb0cc' }} iconType="plainline" />
               <Line type="monotone" dataKey="Valeur" stroke={COLORS.value} strokeWidth={2.5} dot={{ r: 2 }} activeDot={{ r: 4 }} />
@@ -206,14 +205,16 @@ export function ProductAnalysis({ productId }: { productId: string }): React.JSX
 
 function Stat({
   label,
-  value,
+  amount,
+  format,
   sub,
   icon,
   tone = 'flat',
   accent = false
 }: {
   label: string
-  value: string
+  amount: number
+  format: (n: number) => string
   sub?: string
   icon?: React.JSX.Element
   tone?: 'pos' | 'neg' | 'flat'
@@ -222,12 +223,16 @@ function Stat({
   const toneClass =
     tone === 'pos' ? 'text-mint-400' : tone === 'neg' ? 'text-coral-400' : 'text-slate-50'
   return (
-    <div className={`card p-4 ${accent ? 'ring-1 ring-gold-500/20' : ''}`}>
+    <div className={`card card-interactive p-4 ${accent ? 'ring-1 ring-gold-500/20' : ''}`}>
       <div className="mb-2 flex items-center justify-between">
         <span className="text-xs font-medium uppercase tracking-wide text-slate-400">{label}</span>
         <span className={accent ? 'text-gold-500' : 'text-slate-500'}>{icon}</span>
       </div>
-      <div className={`tabnum text-2xl font-bold ${toneClass}`}>{value}</div>
+      <AnimatedNumber
+        value={amount}
+        format={format}
+        className={`tabnum block text-2xl font-bold ${toneClass}`}
+      />
       {sub && <div className="tabnum mt-0.5 text-xs text-slate-400">{sub}</div>}
     </div>
   )
