@@ -13,7 +13,10 @@
   --color-ink-700: #1c2333;
   --color-ink-600: #26304480;
 
-  --color-line: #232c40;
+  /* Translucent neutral hairlines — blend over any surface instead of drawing
+     a hard tinted box. `line` = default outline, `strong` = hover/emphasis. */
+  --color-line: rgba(255, 255, 255, 0.055);
+  --color-line-strong: rgba(255, 255, 255, 0.11);
 
   --color-gold-400: #f5d78a;
   --color-gold-500: #e8c169;
@@ -175,7 +178,7 @@
 
   /* Gentle, movement-free hover for tiles: border + shadow only, no lift. */
   .card-interactive {
-    @apply transition-[box-shadow,border-color] duration-200 hover:border-[#37425c]
+    @apply transition-[box-shadow,border-color] duration-200 hover:border-line-strong
       hover:shadow-card-hover;
     transition-timing-function: var(--ease-out-quint);
   }
