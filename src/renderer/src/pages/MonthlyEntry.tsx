@@ -1,14 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 import {
+  CalendarClock,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   Copy,
   FileText,
   FolderArchive,
+  HelpCircle,
   Info,
   Save,
-  SlidersHorizontal
+  SlidersHorizontal,
+  X
 } from 'lucide-react'
 import { useStore } from '../store'
 import { useFmt } from '../lib/format'
@@ -47,10 +50,18 @@ export function MonthlyEntry(): JSX.Element {
   const fmt = useFmt()
   const locale = db.profile.locale
 
-  const [period, setPeriod] = useState<string>(currentPeriod())
+  const [period, setPeriod] = useState<string>(
+    () => useStore.getState().entryPeriodHint ?? currentPeriod()
+  )
   const [drafts, setDrafts] = useState<Record<string, Draft>>({})
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
   const [busy, setBusy] = useState<string | null>(null)
+  const [showHelp, setShowHelp] = useState<boolean>(db.entries.length === 0)
+
+  // Consume the period hint set by a reminder CTA, then clear it.
+  useEffect(() => {
+    if (useStore.getState().entryPeriodHint) useStore.setState({ entryPeriodHint: null })
+  }, [])
 
   const activeProducts = useMemo(() => db.products.filter((p) => p.active), [db.products])
 
@@ -170,26 +181,70 @@ export function MonthlyEntry(): JSX.Element {
         title="Saisie mensuelle"
         subtitle="Saisis la valeur actuelle de chaque produit. Le reste est optionnel."
         actions={
-          <div className="flex items-center gap-1 rounded-xl border border-line bg-ink-800/60 p-1">
+          <div className="flex items-center gap-2">
             <button
-              className="btn-subtle h-8 w-8 !px-0"
-              onClick={() => setPeriod(previousPeriod(period))}
+              className={`btn-subtle h-9 w-9 !px-0 ${showHelp ? 'text-gold-500' : ''}`}
+              onClick={() => setShowHelp((v) => !v)}
+              title="Conseils de saisie"
             >
-              <ChevronLeft size={18} />
+              <HelpCircle size={18} />
             </button>
-            <span className="min-w-[140px] text-center text-sm font-semibold text-slate-100">
-              {formatPeriod(period, locale)}
-            </span>
-            <button
-              className="btn-subtle h-8 w-8 !px-0"
-              onClick={() => setPeriod(nextPeriod(period))}
-              disabled={period >= currentPeriod()}
-            >
-              <ChevronRight size={18} />
-            </button>
+            <div className="flex items-center gap-1 rounded-xl border border-line bg-ink-800/60 p-1">
+              <button
+                className="btn-subtle h-8 w-8 !px-0"
+                onClick={() => setPeriod(previousPeriod(period))}
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <span className="min-w-[140px] text-center text-sm font-semibold text-slate-100">
+                {formatPeriod(period, locale)}
+              </span>
+              <button
+                className="btn-subtle h-8 w-8 !px-0"
+                onClick={() => setPeriod(nextPeriod(period))}
+                disabled={period >= currentPeriod()}
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
           </div>
         }
       />
+
+      {/* First-entry guidance (recommended periods + why regularity matters) */}
+      {showHelp && (
+        <div className="card mb-4 border-gold-500/20 p-5">
+          <div className="flex items-start gap-3">
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-ink-800 text-gold-500">
+              <CalendarClock size={18} />
+            </div>
+            <div className="flex-1 space-y-2 text-sm text-slate-300">
+              <div className="font-semibold text-slate-100">Bien réussir tes saisies mensuelles</div>
+              <p>
+                <b className="text-slate-200">Quand ?</b> Idéalement en <b>fin de mois</b> (ou dans
+                les tout premiers jours du mois suivant).
+              </p>
+              <p>
+                <b className="text-slate-200">Le plus important : la régularité.</b> Aureon calcule
+                variations, performance et TRI en comparant deux mois consécutifs. En mesurant ton
+                patrimoine <b>au même moment chaque mois</b>, tu évites les faux écarts (ex. avant /
+                après ta paie) et tes analyses restent fiables.
+              </p>
+              <p className="text-slate-500">
+                Astuce : mets un rappel récurrent dans ton agenda — Aureon t’invitera aussi à saisir
+                quand ce sera le bon moment.
+              </p>
+            </div>
+            <button
+              className="btn-subtle h-8 w-8 shrink-0 !px-0"
+              onClick={() => setShowHelp(false)}
+              title="Fermer"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Live summary */}
       <div className="card mb-4 flex items-center justify-between p-5">

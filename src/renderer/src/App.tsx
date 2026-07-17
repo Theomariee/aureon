@@ -14,6 +14,7 @@ import {
   X
 } from 'lucide-react'
 import { useStore } from './store'
+import { entryReminder } from '../../shared/domain'
 import { Toasts } from './components/Toasts'
 import { LockScreen } from './components/LockScreen'
 import { Onboarding } from './components/Onboarding'
@@ -37,6 +38,7 @@ const NAV = [
 
 export default function App(): JSX.Element {
   const {
+    db,
     view,
     setView,
     init,
@@ -48,6 +50,7 @@ export default function App(): JSX.Element {
     recoveredViaCode,
     clearRecoveryFlag
   } = useStore((s) => ({
+    db: s.db,
     view: s.view,
     setView: s.setView,
     init: s.init,
@@ -59,6 +62,8 @@ export default function App(): JSX.Element {
     recoveredViaCode: s.recoveredViaCode,
     clearRecoveryFlag: s.clearRecoveryFlag
   }))
+
+  const reminder = entryReminder(db)
 
   const [onboarding, setOnboarding] = useState(false)
   const [resetOpen, setResetOpen] = useState(false)
@@ -114,6 +119,14 @@ export default function App(): JSX.Element {
               >
                 <Icon size={18} className={active ? 'text-gold-500' : ''} />
                 {item.label}
+                {item.id === 'entry' && reminder.show && (
+                  <span
+                    className={`ml-auto h-2 w-2 rounded-full ${
+                      reminder.state === 'overdue' ? 'bg-coral-400' : 'bg-gold-400'
+                    }`}
+                    title={reminder.state === 'overdue' ? 'Saisie en retard' : 'Saisie à faire'}
+                  />
+                )}
               </div>
             )
           })}

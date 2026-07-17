@@ -8,7 +8,7 @@ import {
   XAxis,
   YAxis
 } from 'recharts'
-import { ArrowDownRight, ArrowUpRight, Coins, Sparkles, Wallet } from 'lucide-react'
+import { ArrowDownRight, ArrowUpRight, CalendarClock, Coins, Sparkles, Wallet } from 'lucide-react'
 import { useStore } from '../store'
 import { useFmt } from '../lib/format'
 import { PageHeader } from '../components/PageHeader'
@@ -22,6 +22,7 @@ import {
   allocationByPlatform,
   buildTimeline,
   currentPeriod,
+  entryReminder,
   formatPeriod,
   movementsForPeriod,
   shortPeriod
@@ -30,9 +31,11 @@ import {
 export function Dashboard(): JSX.Element {
   const db = useStore((s) => s.db)
   const setView = useStore((s) => s.setView)
+  const openEntry = useStore((s) => s.openEntry)
   const fmt = useFmt()
   const locale = db.profile.locale
   const [analysisId, setAnalysisId] = useState<string>('')
+  const reminder = entryReminder(db)
 
   const periods = allPeriods(db)
   const period = periods.length ? periods[periods.length - 1] : currentPeriod()
@@ -102,6 +105,45 @@ export function Dashboard(): JSX.Element {
           </button>
         }
       />
+
+      {/* Monthly entry reminder */}
+      {reminder.show && reminder.targetPeriod && (
+        <div
+          className={`mb-5 flex items-center gap-3 rounded-xl border px-4 py-3 ${
+            reminder.state === 'overdue'
+              ? 'border-coral-500/30 bg-coral-500/10'
+              : 'border-gold-500/30 bg-gold-500/10'
+          }`}
+        >
+          <CalendarClock
+            size={18}
+            className={`shrink-0 ${reminder.state === 'overdue' ? 'text-coral-400' : 'text-gold-400'}`}
+          />
+          <div className="flex-1 text-sm text-slate-200">
+            {reminder.state === 'overdue' ? (
+              <>
+                <b>Saisie de {formatPeriod(reminder.targetPeriod, locale)} en retard.</b>{' '}
+                <span className="text-slate-400">
+                  Fais-la pour garder un historique sans trou — c’est lui qui fiabilise tes courbes.
+                </span>
+              </>
+            ) : (
+              <>
+                <b>C’est le bon moment pour saisir {formatPeriod(reminder.targetPeriod, locale)}.</b>{' '}
+                <span className="text-slate-400">
+                  Mesurer au même moment chaque mois rend tes variations comparables.
+                </span>
+              </>
+            )}
+          </div>
+          <button
+            className="btn-primary h-8 shrink-0 !px-3 text-xs"
+            onClick={() => openEntry(reminder.targetPeriod ?? undefined)}
+          >
+            Saisir {shortPeriod(reminder.targetPeriod, locale)}
+          </button>
+        </div>
+      )}
 
       {/* KPI row */}
       <div className="mb-5 grid grid-cols-4 gap-4">

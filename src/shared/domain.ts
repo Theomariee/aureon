@@ -494,6 +494,67 @@ export function portfolioTri(db: Database): number | null {
   return clampRate(xirr(flows))
 }
 
+// ── Entry reminder (nudge to record a new month) ────────────────────────────
+
+/** Number of days in the month of `d`. */
+export function daysInMonth(d: Date): number {
+  return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()
+}
+
+export interface EntryReminder {
+  /** Whether to surface a call-to-action. */
+  show: boolean
+  /** 'window' = we're in the ideal end-of-month window; 'overdue' = a month was skipped. */
+  state: 'none' | 'window' | 'overdue'
+  /** The month the user is invited to record. */
+  targetPeriod: string | null
+  /** Most recent recorded period, if any. */
+  lastPeriod: string | null
+}
+
+/** Days at each edge of the month that count as the "good" recording window. */
+export const REMINDER_WINDOW_DAYS = 5
+
+/**
+ * Decides whether to nudge the user to record a month, following the
+ * "end of month (or first days of the next)" recommendation.
+ * - In the last ~5 days of a month → invite to record the current month.
+ * - In the first ~5 days → invite to record the previous month.
+ * - A fully-past unrecorded month is flagged as overdue at any time.
+ * Returns show:false when there are no entries yet (handled by onboarding).
+ */
+export function entryReminder(db: Database, now = new Date()): EntryReminder {
+  const periods = allPeriods(db)
+  const lastPeriod = periods.length ? periods[periods.length - 1] : null
+  const none: EntryReminder = { show: false, state: 'none', targetPeriod: null, lastPeriod }
+  if (periods.length === 0) return none
+
+  const firstPeriod = periods[0] // the user started tracking here
+  const current = currentPeriod(now)
+  const previous = previousPeriod(current)
+  const saved = new Set(periods)
+  const day = now.getDate()
+  const inStart = day <= REMINDER_WINDOW_DAYS
+  const inEnd = day >= daysInMonth(now) - (REMINDER_WINDOW_DAYS - 1)
+
+  // Only months from the first recorded one onward are "expected" — months
+  // before the user started tracking are never a gap.
+  if (previous >= firstPeriod && !saved.has(previous)) {
+    return {
+      show: true,
+      state: inStart ? 'window' : 'overdue',
+      targetPeriod: previous,
+      lastPeriod
+    }
+  }
+  // Previous month done (or before start) — invite to record the current
+  // month only near its end.
+  if (!saved.has(current) && inEnd) {
+    return { show: true, state: 'window', targetPeriod: current, lastPeriod }
+  }
+  return none
+}
+
 // ── Seed / empty database ───────────────────────────────────────────────────
 
 export function emptyDatabase(now = new Date()): Database {

@@ -29,6 +29,9 @@ interface State {
   /** True when the current session was unlocked via the recovery code (offers PIN reset). */
   recoveredViaCode: boolean
 
+  /** Month to pre-select when opening the entry screen (set by a reminder CTA). */
+  entryPeriodHint: string | null
+
   init: () => Promise<void>
   unlock: (pin: string) => Promise<{ ok: boolean; error?: string }>
   unlockRecovery: (code: string) => Promise<{ ok: boolean; error?: string }>
@@ -36,6 +39,7 @@ interface State {
   markPinSet: (v: boolean) => void
   togglePrivacy: () => void
   setView: (v: View) => void
+  openEntry: (period?: string) => void
   toast: (message: string, tone?: Toast['tone']) => void
   dismissToast: (id: string) => void
   replaceDb: (db: Database) => Promise<void>
@@ -101,6 +105,7 @@ export const useStore = create<State>((set, get) => {
     locked: false,
     privacy: localStorage.getItem('aureon.privacy') === '1',
     recoveredViaCode: false,
+    entryPeriodHint: null,
 
     init: async () => {
       const status = await window.api.securityStatus()
@@ -133,6 +138,7 @@ export const useStore = create<State>((set, get) => {
       }),
 
     setView: (view) => set({ view }),
+    openEntry: (period) => set({ view: 'entry', entryPeriodHint: period ?? null }),
 
     toast: (message, tone = 'info') => {
       const id = uid()
