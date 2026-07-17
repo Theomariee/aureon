@@ -283,7 +283,7 @@ export function MonthlyEntry(): React.JSX.Element {
           <div key={platform.id} className="card overflow-hidden">
             <div className="flex items-center gap-2 border-b border-line px-5 py-3">
               <span
-                className="h-2.5 w-2.5 rounded-sm"
+                className="h-2.5 w-2.5 rounded-xs"
                 style={{ background: platform.color ?? '#e8c169' }}
               />
               <h3 className="text-sm font-semibold text-slate-100">{platform.name}</h3>

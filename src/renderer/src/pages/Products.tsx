@@ -176,7 +176,7 @@ export function Products(): React.JSX.Element {
           return (
             <div key={plat.id} className="card overflow-hidden">
               <div className="flex items-center gap-3 border-b border-line px-5 py-3">
-                <span className="h-3 w-3 rounded-sm" style={{ background: plat.color ?? '#e8c169' }} />
+                <span className="h-3 w-3 rounded-xs" style={{ background: plat.color ?? '#e8c169' }} />
                 <h3 className="text-sm font-semibold text-slate-100">{plat.name}</h3>
                 <span className="chip">{products.length} produit(s)</span>
                 <div className="ml-auto flex items-center gap-1">

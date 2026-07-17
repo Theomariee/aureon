@@ -53,7 +53,7 @@ export function Donut({
         {slices.map((s) => (
           <div key={s.key} className="flex items-center gap-2 text-sm">
             <span
-              className="h-2.5 w-2.5 shrink-0 rounded-sm"
+              className="h-2.5 w-2.5 shrink-0 rounded-xs"
               style={{ background: s.color }}
             />
             <span className="min-w-0 flex-1 truncate text-slate-300" title={s.label}>

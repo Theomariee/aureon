@@ -55,7 +55,7 @@ export function PinInput({
           onChange={(e) => setDigit(i, e.target.value)}
           onKeyDown={(e) => onKeyDown(i, e)}
           onFocus={(e) => e.target.select()}
-          className="h-14 w-12 rounded-xl border border-line bg-ink-900/80 text-center text-2xl font-semibold text-slate-100 outline-none transition focus:border-gold-500/60 focus:ring-2 focus:ring-gold-500/20 disabled:opacity-50"
+          className="h-14 w-12 rounded-xl border border-line bg-ink-900/80 text-center text-2xl font-semibold text-slate-100 outline-hidden transition focus:border-gold-500/60 focus:ring-2 focus:ring-gold-500/20 disabled:opacity-50"
         />
       ))}
     </div>

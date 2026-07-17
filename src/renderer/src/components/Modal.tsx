@@ -21,7 +21,7 @@ export function Modal({ open, title, onClose, children, footer, width = 520 }: P
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <div className="absolute inset-0 bg-ink-950/70 backdrop-blur-sm" onClick={onClose} />
+          <div className="absolute inset-0 bg-ink-950/70 backdrop-blur-xs" onClick={onClose} />
           <motion.div
             className="card relative z-10 w-full overflow-hidden"
             style={{ maxWidth: width }}

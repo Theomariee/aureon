@@ -28,7 +28,7 @@ export function TitleBar(): React.JSX.Element {
   return (
     <div className="app-drag flex h-9 shrink-0 select-none items-center justify-between border-b border-line bg-ink-950/90">
       <div className={`flex items-center gap-2 px-3 ${isMac ? 'pl-[74px]' : ''}`}>
-        <div className="grid h-4 w-4 place-items-center rounded bg-gold-grad text-ink-950">
+        <div className="grid h-4 w-4 place-items-center rounded-sm bg-gold-grad text-ink-950">
           <Gem size={11} />
         </div>
         <span className="text-xs font-medium tracking-wide text-slate-400">Aureon</span>

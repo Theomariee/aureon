@@ -66,7 +66,7 @@ export function ProductAnalysis({ productId }: { productId: string }): React.JSX
       <div className="flex flex-wrap items-center gap-2">
         <span className="chip">
           <span
-            className="h-2 w-2 rounded-sm"
+            className="h-2 w-2 rounded-xs"
             style={{ background: platform?.color ?? '#e8c169' }}
           />
           {platform?.name ?? '—'}
