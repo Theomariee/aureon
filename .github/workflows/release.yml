@@ -85,9 +85,10 @@ jobs:
             gh release upload "$TAG" artifacts/* --repo "$GITHUB_REPOSITORY" --clobber
           else
             echo "Creating release $TAG."
+            # Titre = numéro de version nu (sans le "v" ni le nom du produit).
             gh release create "$TAG" artifacts/* \
               --repo "$GITHUB_REPOSITORY" \
-              --title "Aureon ${TAG#v}" \
+              --title "${TAG#v}" \
               --generate-notes
           fi
 
