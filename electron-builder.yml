@@ -30,8 +30,10 @@ nsis:
   shortcutName: Aureon
   installerIcon: build/icon.ico
   uninstallerIcon: build/icon.ico
+# Conservé pour la génération des métadonnées de mise à jour (latest*.yml).
+# La publication elle-même est faite par le workflow via le CLI `gh`.
 publish:
   provider: github
   owner: Theomariee
   repo: aureon
-  releaseType: prerelease
+  releaseType: release
